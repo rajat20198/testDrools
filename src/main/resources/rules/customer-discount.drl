@@ -1,0 +1,87 @@
+import com.example.drools.test.OrderRequest;
+import com.example.drools.test.CustomerType;
+global com.example.drools.test.OrderDiscount orderDiscount;
+
+dialect "mvel"
+
+rule "Age based discount"
+    when
+        o: OrderRequest(age < 20 || age > 50)
+    then
+        System.out.println("==========Adding 5% discount for Kids/ senior customer=============");
+        modify(o){orderDiscount = o.orderDiscount + 5};
+//        o.setOrderDiscount(o.getOrderDiscount()+5);
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5)
+end
+
+rule "Customer type based discount - Loyal customer"
+    when
+        OrderRequest(customerType.getValue == "LOYAL")
+    then
+        System.out.println("==========Adding 5% discount for LOYAL customer=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
+
+rule "Customer type based discount - others"
+    when
+        OrderRequest(customerType.getValue != "LOYAL")
+    then
+        System.out.println("==========Adding 3% discount for NEW or DISSATISFIED customer=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 3);
+end
+
+rule "New Customer discount"
+    when
+        OrderRequest(customerType.getValue == "NEW")
+    then
+        System.out.println("==========Adding 5% extra discount for NEW customer=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
+
+rule "Amount based discount"
+    when
+        OrderRequest(amount > 5000L)
+    then
+        System.out.println("==========Adding 5% discount for amount more than 5000 =============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
+
+rule "Amount based discount 2"
+    when
+        OrderRequest(amount > 10000L)
+    then
+        System.out.println("==========Adding 5% discount for amount more than 10000 =============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
+
+rule "Card based discount SILVER"
+    when
+        OrderRequest(cardType =="SILVER")
+    then
+        System.out.println("==========Adding 3% discount for GOLD card=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 3);
+end
+
+rule "Card based discount GOLD"
+    when
+        OrderRequest(cardType =="GOLD")
+    then
+        System.out.println("==========Adding 5% discount for GOLD card=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
+
+rule "Card based discount BLACK"
+    when
+        OrderRequest(cardType =="BLACK")
+    then
+        System.out.println("==========Adding 10% discount for BLACK card=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 10);
+end
+
+rule "Prime member discount"
+    when
+        OrderRequest(isPrime == true)
+    then
+        System.out.println("==========Adding 5% extra discount for Prime Member=============");
+        orderDiscount.setDiscount(orderDiscount.getDiscount() + 5);
+end
